@@ -123,7 +123,6 @@
 
 
 <script type="text/javascript">
-    import th from "./assets/lib/moment.js/src/locale/th";
 
     const data = [
         ["","3242323","120500003","中清创缝合","处置","待执行","确认执行"],
@@ -135,6 +134,7 @@
         App.init();
         init_doctor_table();
         init_table_checkbox();
+        search_and_fill_table();
     });
 
     function init_doctor_table(){
@@ -177,16 +177,16 @@
                 'render': function (data, type, full, meta) {
                     const button = $("<input type='button' class='btn btn-space btn-primary'>");
                     button.val(data);
-                    if (data === "确认提交")
-                        button.onclick(confirm(full, this));
-                    else if (data === "录入结果")
-                        button.onclick(input_result(full, this));
+                    const bt_id = full[1] + full[2];
+                    button.attr("id", full[1] + full[2]);
+                    if (data === "确认执行"){
+                        button.attr("onclick", "confirm('" + full[2] + "', " + bt_id + ")");
+                    } else if (data === "录入结果")
+                        button.bind('click', input_result(full, this));
                     else if (data === "查看结果")
-                        button.onclick(show_result(full, this));
+                        button.bind('click', show_result(full, this));
                     else
                         button.text("不可达的按钮");
-
-                    console.log(button.prop("outerHTML"));
                     return button.prop("outerHTML");
                 }
             }
@@ -202,7 +202,7 @@
             ]
         };
         $("#patient-table").dataTable(dataTableConfig);
-        $("div.toolbar").html("<input type='text' id='custom-search' placeholder='病例号/医技项目id' class='input-xs'>");
+        $("div.toolbar").html("<input type='text' id='custom-search' placeholder='病例号/医技项目id' class='input-sm form-control'>");
         $("#custom-search").autocomplete({
             source: ["3242323", "210103015", "210103009", "210101002", "120500003"],
             select: function () {
@@ -210,6 +210,7 @@
             }
         })
         $("#custom-search").keyup(function (event) {
+            // 监听回车键
             if (event.keyCode === 13)
                 search_and_fill_table();
         })
@@ -260,7 +261,8 @@
     }
 
     function search_and_fill_table() {
-        const text = $("#custom-search").val();
+        // const text = $("#custom-search").val();
+        const text = "3242323";
         const table = $("#patient-table").DataTable();
         table.clear();
         for (let r of data){
@@ -272,18 +274,35 @@
     }
 
     // 确认执行
-    function confirm(row, bt) {
+    function confirm(tech_id, bt_id) {
+        layer.confirm("确认该项已经完成了吗？",{
+            btn:["yes", "no"],
+            btn1: function(index, layero){
+                // 修改项目状态，修改按钮文字和onclick事件
+                const button = $("#" + bt_id);
+                const table = $("#patient-table").DataTable();
+                table.rows().every(function (rowIdx, tableLoop, rowLoop) {
+                    const data = this.data();
+                    console.log(tech_id + " " + data[2] + " " + (tech_id === data[2]));
+                    if (data[2] === tech_id){
+                        table.cell(rowIdx, 5).data("已执行");
+                    }
+                });
+                layer.close(index);
+            },
+            btn2: function(index, layero){
+                return true;
+            }
+        })
 
     }
 
     // 录入结果
-    function input_result(row, bt) {
-
+    function input_result(bt_id) {
     }
 
     // 查看结果
-    function show_result(row, bt) {
-
+    function show_result(bt_id) {
     }
 </script>
 </html>
