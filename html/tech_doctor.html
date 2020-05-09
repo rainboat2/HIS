@@ -3,14 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="shortcut icon" href="assets/img/logo-fav.png">
     <title>HIS</title>
     <link rel="stylesheet" type="text/css" href="assets/css/style_me.css"/>
     <link rel="stylesheet" type="text/css" href="assets/lib/perfect-scrollbar/css/perfect-scrollbar.min.css"/>
     <link rel="stylesheet" type="text/css" href="assets/lib/material-design-icons/css/material-design-iconic-font.min.css"/>
-    <link rel="stylesheet" type="text/css" href="assets/lib/datatables/css/jquery.dataTables.css">
     <link rel="stylesheet" href="assets/css/style.css" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="assets/lib/datatables/css/dataTables.bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="assets/libme/jquery-ui-1.12.1/jquery-ui.css"/>
 </head>
 <body>
@@ -82,10 +81,6 @@
                                 <thead>
                                 <tr>
                                     <th>
-                                        <div class="be-checkbox-sm be-checkbox">
-                                            <input id="select-all" type="checkbox">
-                                            <label for="select-all"></label>
-                                        </div>
                                     </th>
                                     <th>病例号</th>
                                     <th>医技项目id</th>
@@ -190,7 +185,6 @@
     $(document).ready(function(){
         App.init();
         init_doctor_table();
-        init_table_checkbox();
     });
 
     function init_doctor_table(){
@@ -280,24 +274,6 @@
         })
     }
 
-    function init_table_checkbox() {
-        $("#select-all").on('click', function () {
-            const table = $("#patient-table").DataTable();
-            // 获取所有显示在表格中的行
-            const rows = table.rows({'search': 'applied'}).nodes();
-            $('input[type="checkbox"]', rows).prop('checked', this.checked)
-        })
-
-        $("#patient-table tbody").on('change', 'input[type="checkbox"]', function () {
-            if (!this.checked){
-                const el = $("#select-all").get(0);
-                if (el && el.checked && ('indeterminate' in el)){
-                    el.indeterminate = true;
-                }
-            }
-        })
-    }
-
     function cancel_item() {
         const table = $("#patient-table").DataTable();
         // 找到被选中的项目
@@ -363,34 +339,32 @@
                 table.cell(row_idx, 5).data("已执行");
                 table.cell(row_idx, 6).data("录入结果");
 
-                layer.close(index);
-                layer.msg("成功执行", {icon: 1, time: 1500});
-            },
-            btn2: function(index, layero){
-                layer.msg("已取消执行", {icon: 2, time: 1500});
-                return true;
-            }
-        })
-    }
+                    layer.close(index);
+                    layer.msg("成功执行", {icon: 1, time: 1500});
+                },
+                btn2: function(index, layero){
+                }
+            })
+        }
 
-    // 录入结果
-    function input_result(row_idx) {
-        layer.open({
-            type: 6,
-            title: "录入结果",
-            btn: ["确认", "取消"],
-            content: $("#input-result-form").html(),
-            btn1: function (index, layero) {
-                const table = $("#patient-table").DataTable();
-                table.cell(row_idx, 5).data("已完成");
-                table.cell(row_idx, 6).data("查看结果");
+        // 录入结果
+        function input_result(row_idx) {
+            layer.open({
+                type: 6,
+                title: "录入结果",
+                btn: ["确认", "取消"],
+                content: $("#input-result-form").html(),
+                btn1: function (index, layero) {
+                    const table = $("#patient-table").DataTable();
+                    table.cell(row_idx, 5).data("已完成");
+                    table.cell(row_idx, 6).data("查看结果");
 
-                layer.close(index);
-                layer.msg("结果已保存", {icon: 1, time: 1500});
+                    layer.close(index);
+                    layer.msg("结果已保存", {icon: 1, time: 1500});
             },
             btn2: function (index, layero) {
             }
-        })
+        });
     }
 
     // 查看结果

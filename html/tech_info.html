@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="shortcut icon" href="assets/img/logo-fav.png">
     <title>HIS</title>
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
-
     <link rel="stylesheet" type="text/css" href="assets/css/style_me.css"/>
     <link rel="stylesheet" type="text/css" href="assets/lib/perfect-scrollbar/css/perfect-scrollbar.min.css"/>
     <link rel="stylesheet" type="text/css" href="assets/lib/material-design-icons/css/material-design-iconic-font.min.css"/>
+    <link rel="stylesheet" type="text/css" href="assets/lib/datatables/css/dataTables.bootstrap.min.css"/>
     <link rel="stylesheet" href="assets/css/style.css" type="text/css"/>
+    <link rel="stylesheet" type="text/css" href="assets/libme/jquery-ui-1.12.1/jquery-ui.css"/>
 </head>
 <body>
 <div class="be-wrapper be-fixed-sidebar">
@@ -91,9 +91,7 @@
                                     <th>项目名称</th>
                                     <th>规格</th>
                                     <th>单价</th>
-                                    <th>所属费用科目ID</th>
                                     <th>执行科室ID</th>
-                                    <th>拼音助记码</th>
                                     <th>项目类型</th>
                                     <th>创建时间</th>
                                     <th>操作</th>
@@ -110,80 +108,385 @@
     </div>
 </div>
 
+<div id="row-form" style="display: none">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <form action="#" class="form-horizontal">
+                        <div class="form-group">
+                            <label for='id' class="col-sm-3 control-label">主键</label>
+                            <div class="col-sm-6">
+                                <input id='id' type="text" class="form-control input-xs">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for='code' class="col-sm-3 control-label">项目编码</label>
+                            <div class="col-sm-6">
+                                <input id='code' type="text" class="form-control input-xs">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for='name' class="col-sm-3 control-label">项目名称</label>
+                            <div class="col-sm-6">
+                                <input id='name' type="text" class="form-control input-xs">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for='specification' class="col-sm-3 control-label">规格</label>
+                            <div class="col-sm-6">
+                                <input id='specification' type="text" class="form-control input-xs">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for='price' class="col-sm-3 control-label">单价</label>
+                            <div class="col-sm-6">
+                                <input id='price' type="text" class="form-control input-xs">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for='dept_id' class="col-sm-3 control-label">执行科室ID</label>
+                            <div class="col-sm-6">
+                                <input id='dept_id' type="text" class="form-control input-xs">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for='type' class="col-sm-3 control-label">项目类型</label>
+                            <div class="col-sm-6">
+                                <input id='type' type="text" class="form-control input-xs">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="input-file" style="display: none">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <form action="#" class="form-horizontal group-border-dashed">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <input type="file" name="file-1" id="file-1" data-multiple-caption="{count} files selected" multiple class="inputfile">
+                                <label for="file-1" class="btn-default"> <i class="mdi mdi-upload"></i><span id="select-file-button">点击选择文件</span></label>
+                                <input type="text" value="  选中路径" style="border: 0px" disabled="disabled">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 
 <script src="assets/lib/jquery/jquery.min.js" type="text/javascript"></script>
+<script src="assets/libme/jquery-ui-1.12.1/external/jquery/jquery.js" type="text/javascript"></script>
+<script src="assets/libme/jquery-ui-1.12.1/jquery-ui.js" type="text/javascript"></script>
 <script src="assets/lib/perfect-scrollbar/js/perfect-scrollbar.jquery.min.js" type="text/javascript"></script>
 <script src="assets/js/main.js" type="text/javascript"></script>
-<script src="assets/js/myjs/payDrug.js" type="text/javascript"></script>
-<script src="assets/js/myjs/common.js" type="text/javascript" charset="GBK"></script>
 <script src="assets/lib/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="assets/lib/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+<script src="assets/lib/datatables/js/jquery.dataTables.min.js" type="text/javascript"></script>
+<script src="assets/lib/datatables/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+<script src="assets/lib/datatables/plugins/buttons/js/dataTables.buttons.js" type="text/javascript"></script>
+<script src="assets/lib/datatables/plugins/buttons/js/buttons.html5.js" type="text/javascript"></script>
+<script src="assets/lib/datatables/plugins/buttons/js/buttons.flash.js" type="text/javascript"></script>
+<script src="assets/lib/datatables/plugins/buttons/js/buttons.print.js" type="text/javascript"></script>
+<script src="assets/lib/datatables/plugins/buttons/js/buttons.colVis.js" type="text/javascript"></script>
+<script src="assets/lib/datatables/plugins/buttons/js/buttons.bootstrap.js" type="text/javascript"></script>
+<script src="assets/js/app-tables-datatables.js" type="text/javascript"></script>
 <script src="assets/lib/layui/layui.all.js" type="text/javascript"></script>
 
+
 <script type="text/javascript">
+
+    var tech_data = [["","1","120200001","大抢救","日","200.00","133","3","2019/3/1","修改"],
+        ["","2","120200002","中抢救","日","150.00","133","3","2019/3/1","修改"],
+        ["","3","120200003","小抢救","日","80.00","133","3","2019/3/1","修改"],
+        ["","4","120300001","中心吸氧","小时","2.50","122","3","2019/3/1","修改"],
+        ["","5","120300002","低流量吸氧","小时","2.00","122","3","2019/3/1","修改"],
+        ["","6","120300003","高频吸氧","小时","4.00","122","3","2019/3/1","修改"],
+        ["","7","120500001","大清创缝合","次","120.00","133","3","2019/3/1","修改"],
+        ["","8","120500002","中清创缝合","次","80.00","133","3","2019/3/1","修改"],
+        ["","9","120500003","小清创缝合","次","40.00","133","3","2019/3/1","修改"],
+        ["","10","121000001","洗胃","次","40.00","133","3","2019/3/1","修改"],
+        ["","11","120800002","肠内高营养治疗","日","5.00","133","3","2019/3/1","修改"],
+        ["","12","121500001","灌肠","次","10.00","133","3","2019/3/1","修改"],
+        ["","13","240100003","计算机治疗计划系统(TPS)","疗程","180","128","3","2019/3/1","修改"],
+        ["","14","240100004","特定计算机治疗计划系统","疗程","500","128","3","2019/3/1","修改"],
+        ["","15","240100004b","加速器适型治疗计划系统","疗程","500","128","3","2019/3/1","修改"],
+        ["","16","240100004c","伽玛刀治疗计划系统","疗程","500","128","3","2019/3/1","修改"],
+        ["","17","240100004d","X刀之TPS治疗计划系统","疗程","500","128","3","2019/3/1","修改"],
+        ["","18","240100004e","逆向调强TPS及优化治疗计划系统","疗程","500","128","3","2019/3/1","修改"],
+        ["","19","240100005","放射治疗的适时监控","次","50","128","3","2019/3/1","修改"],
+        ["","20","210101001","普通透视","每个部位","5","128","1","2019/3/1","修改"],
+        ["","25","210101002","食管钡餐透视","次","15","128","1","2019/3/1","修改"],
+        ["","26","210101003","床旁透视与术中透视","半小时","40","128","1","2019/3/1","修改"],
+        ["","27","210101004","C型臂术中透视","半小时","150","128","1","2019/3/1","修改"],
+    ]
+
     $(document).ready(function(){
         App.init();
+        init_datatable();
+        fill_table(tech_data);
+        init_table_checkbox();
     });
 
+
     function init_datatable(){
-        $("#tech-data-table").dataTable();
+        $.fn.DataTable.ext.pager.numbers_length = 5;
+        const dataTableConfig = {
+            "dom":"<'row be-datatable-header'<'pull-left'f><'pull-right' <'top-button-bar'>>>" +
+                "<'row be-datatable-body'<'col-sm-12'tr>>" +
+                "<'row be-datatable-footer'<'col-sm-6' <'bottom-button-bar'>><'col-sm-6 'p>>",
+            "bPaginate": true,  //是否分页。
+            "bStateSave": true,
+            "aLengthMenu": [5, 10, 15],
+            "language": {
+                "processing": "数据查询中",
+                "emptyTable": "没有数据",
+                "info": "显示 _START_ 到 _END_ 条数据 共 _TOTAL_ 条数据",
+                "infoEmpty": "无数据",
+                "infoFiltered": "(在 _MAX_ 条数据中查询)",
+                "lengthMenu": "显示 _MENU_ 条数据",
+                "search": "查询:",
+                "zeroRecords": "没有找到对应的数据",
+                "paginate": {
+                    "previous":"上一页",
+                    "next": "下一页",
+                    "last": "末页",
+                    "first": "首页"
+                },
+                sSearchPlaceholder: "项目编码/项目名称"
+            },
+            'columnDefs': [{
+                'targets': 0,
+                'searchable': false,
+                'orderable': false,
+                'render': function (data, type, full, meta){
+                    const div = $('<div class="be-checkbox be-checkbox-sm"></div>');
+                    const input = $("<input type='checkbox' name='id[]'>");
+                    const label = $("<label></label>")
+                    input.attr('id', meta.row);
+                    label.attr('for', meta.row);
+                    div.append(input);
+                    div.append(label);
+                    return div.prop("outerHTML");
+                }
+            },{
+                'targets': 9,
+                'searchable': false,
+                'orderable' : false,
+                'render': function (data, type, row, meta) {
+                    const button = $("<input type='button' class='btn btn-space btn-primary'>");
+                    button.val(data);
+
+                    if (data === "修改") {
+                        button.attr("onclick", "modify(" + meta.row + ")");
+                    } else
+                        button.text("不可达的按钮");
+                    return button.prop("outerHTML");
+                }
+            },
+                {targets: 1, searchable: false},
+                {targets: 4, searchable: false},
+                {targets: 5, searchable: false},
+                {targets: 6, searchable: false},
+                {targets: 7, searchable: false},
+                {targets: 8, searchable: false},
+            ],
+        };
+        $("#tech-data-table").dataTable(dataTableConfig);
+        $("div.top-button-bar").html(generate_two_button("导出所选项目", "export_selected_row()", "删除所选项目", "delete_selected_row()"));
+        $("div.bottom-button-bar").html(generate_two_button("批量导入", "import_file()", "新增项目", "add_item()"))
     }
 
-    data = [
-        ["1","120200001","大抢救","日","200.00","16","133","DQJ","3","2019/3/1","修改"],
-        ["2","120200002","中抢救","日","150.00","16","133","ZQJ","3","2019/3/1","修改"],
-        ["3","120200003","小抢救","日","80.00","16","133","XQJ","3","2019/3/1","修改"],
-        ["4","120300001","中心吸氧","小时","2.50","16","122","ZXXY","3","2019/3/1","修改"],
-        ["5","120300002","低流量吸氧","小时","2.00","16","122","DLLXY","3","2019/3/1","修改"],
-        ["6","120300003","高频吸氧","小时","4.00","16","122","GPXY","3","2019/3/1","修改"],
-        ["7","120500001","大清创缝合","次","120.00","16","133","DQCFH","3","2019/3/1","修改"],
-        ["8","120500002","中清创缝合","次","80.00","16","133","ZQCFH","3","2019/3/1","修改"],
-        ["9","120500003","小清创缝合","次","40.00","16","133","XQCFH","3","2019/3/1","修改"],
-        ["10","121000001","洗胃","次","40.00","16","133","XW","3","2019/3/1","修改"],
-        ["11","120800002","肠内高营养治疗","日","5.00","16","133","CNGYYZL","3","2019/3/1","修改"],
-        ["12","121500001","灌肠","次","10.00","16","133","GC","3","2019/3/1","修改"],
-        ["13","240100003","计算机治疗计划系统(TPS)","疗程","180","7","128","JSJZLJHXT","3","2019/3/1","修改"],
-        ["14","240100004","特定计算机治疗计划系统","疗程","500","7","128","TDJSJZLJHXT","3","2019/3/1","修改"],
-        ["15","240100004b","加速器适型治疗计划系统","疗程","500","7","128","JSQSXZLJHXT","3","2019/3/1","修改"],
-        ["16","240100004c","伽玛刀治疗计划系统","疗程","500","7","128","GMDZLJHXT","3","2019/3/1","修改"],
-        ["17","240100004d","X刀之TPS治疗计划系统","疗程","500","7","128","XDZTPSZLJHXT","3","2019/3/1","修改"],
-        ["18","240100004e","逆向调强TPS及优化治疗计划系统","疗程","500","7","128","NXTQTPSJYHZLJHXT","3","2019/3/1","修改"],
-        ["19","240100005","放射治疗的适时监控","次","50","7","128","FSZLDSSJK","3","2019/3/1","修改"],
-        ["20","210101001","普通透视","每个部位","5","7","128","PTTS","1","2019/3/1","修改"],
-        ["25","210101002","食管钡餐透视","次","15","7","128","SGBCTS","1","2019/3/1","修改"],
-        ["26","210101003","床旁透视与术中透视","半小时","40","7","128","CPTSYSZTS","1","2019/3/1","修改"],
-        ["27","210101004","C型臂术中透视","半小时","150","7","128","CXBSZTS","1","2019/3/1","修改"],
-        ["28","210103001","气脑造影","次","80","7","128","QNZY","1","2019/3/1","修改"],
-        ["29","210103003","脑室碘水造影","次","60","7","128","NSDSZY","1","2019/3/1","修改"],
-        ["30","210103004","X清肌酸激酶－MB同工酶活性测定（干化X法）","次","60","3","125","XQJSJM－MBTGMHXCD（GHXF）","2","2019/3/1","修改"],
-        ["31","210103005","X清肌酸激酶－MB同工酶活性测定（金标法）","次","60","3","125","XQJSJM－MBTGMHXCD（JBF）","2","2019/3/1","修改"],
-        ["32","210103006","尿α1微量球蛋白测定（化X发光法）","单侧","50","3","125","Nα1WLQDBCD（HXFGF）","2","2019/3/1","修改"],
-        ["33","210103007","β2微球蛋白测定（各种免疫X方法）","单侧","50","3","125","β2WQDBCD（GZMYXFF）","2","2019/3/1","修改"],
-        ["34","210103008","X清β2微球蛋白测定（化X发光法）","单侧","40","3","125","XQβ2WQDBCD（HXFGF）","2","2019/3/1","修改"],
-        ["35","210103009","尿β2微球蛋白测定（化X发光法）","单侧","80","3","125","Nβ2WQDBCD（HXFGF）","2","2019/3/1","修改"],
-        ["36","210103010","尿蛋白电泳分析（凝胶法）","单侧","70","3","125","NDBDYFX（NJF）","2","2019/3/1","修改"],
-        ["37","210103011","X清抗谷氨酸脱J酶抗体测定（各种免疫X方法）","单侧","50","3","125","XQKGASTJMKTCD（GZMYXFF）","2","2019/3/1","修改"],
-        ["38","210103012","胃泌素测定（各种免疫X方法）","次","50","3","125","WMSCD（GZMYXFF）","2","2019/3/1","修改"],
-        ["39","210103013","X浆凝X酶原时间测定(PT)(仪器法)","次","50","3","125","XJNXMYSJCD(PT)(YQF)","2","2019/3/1","修改"],
-        ["40","210103014","X清肌酸激酶－MB同工酶活性测定（速率法）","次","60","3","125","XQJSJM－MBTGMHXCD（SLF）","2","2019/3/1","修改"],
-        ["41","210103015","醛固酮测定（化X发光法、荧光免疫法）","次","50","3","125","QGTCD（HXFGF、YGMYF）","2","2019/3/1","修改"],
-        ["42","210103016","尿儿茶酚胺测定（色谱法）","次","80","3","125","NECFACD（SPF）","2","2019/3/1","修改"],
-        ["43","210103017","尿香草苦杏仁酸(VMA)测定（色谱法）","次","60","3","125","NXCKXRS(VMA)CD（SPF）","2","2019/3/1","修改"],
-        ["44","210103018","X浆肾素活性测定","次","80","3","125","XJSSHXCD","2","2019/3/1","修改"],
-        ["45","210103019","X管紧张素Ⅱ测定","次","100","3","125","XGJZSⅡCD","2","2019/3/1","修改"],
-        ["46","210103020","促红细胞生成素测定","次","50","3","125","CHXBSCSCD","2","2019/3/1","修改"],
-        ["47","210103021","睾酮测定（化X发光法、荧光免疫法）","次","80","3","125","ZTCD（HXFGF、YGMYF）","2","2019/3/1","修改"],
-        ["48","210103022","葡萄糖测定（干化X法）(X清)","次","300","3","125","PTTCD（GHXF）(XQ)","2","2019/3/1","修改"],
-        ["49","210103023","糖化X红蛋白测定（色谱法）","次","80","3","125","THXHDBCD（SPF）","2","2019/3/1","修改"],
-        ["50","210103024","X浆乳酸测定","次","80","3","125","XJRSCD","2","2019/3/1","修改"],
-        ["51","210103025","尿N-X-β-D-氨基葡萄糖苷酶测定","次","70","3","125","NN-X-β-D-AJPTTZMCD","2","2019/3/1","修改"],
-        ["52","210103026","尿β-D-半乳糖苷酶测定","次","50","3","125","Nβ-D-BRTZMCD","2","2019/3/1","修改"],
-        ["53","210103027","唐氏综合症筛查","单侧","70","3","125","TSZHZSC","2","2019/3/1","修改"],
-        ["54","210103028","雌三醇测定（化X发光法、荧光免疫法）","次","50","3","125","CSCCD（HXFGF、YGMYF）","2","2019/3/1","修改"],
-        ["55","210103029","雌二醇测定（化X发光法、荧光免疫法）","次","50","3","125","CECCD（HXFGF、YGMYF）","2","2019/3/1","修改"],
-        ["56","210103030","孕酮测定（化X发光法、荧光免疫法）","单侧","50","3","125","YTCD（HXFGF、YGMYF）","2","2019/3/1","修改"],
+    function init_table_checkbox() {
+        $("#select-all").on('click', function () {
+            const table = $("#tech-data-table").DataTable();
+            // 获取所有显示在表格中的行
+            const rows = table.rows({'search': 'applied'}).nodes();
+            $('input[type="checkbox"]', rows).prop('checked', this.checked)
+        })
 
-    ]
+        $("#tech-data-table tbody").on('change', 'input[type="checkbox"]', function () {
+            if (!this.checked){
+                const el = $("#select-all").get(0);
+                if (el && el.checked && ('indeterminate' in el)){
+                    el.indeterminate = true;
+                }
+            }
+        })
+    }
+
+    function generate_two_button(name1, f1, name2, f2){
+        const div = $("<div class='col-sm-12'></div>")
+        const b1 = $("<input type='button' class='btn btn-space btn-primary'>");
+        b1.val(name1);
+        b1.attr("onclick", f1);
+        const b2 = $("<input type='button' class='btn btn-space btn-primary'>");
+        b2.val(name2);
+        b2.attr("onclick", f2);
+        div.append(b1);
+        div.append(b2);
+        return div.prop("outerHTML");
+    }
+    
+    function delete_selected_row() {
+        const set = new Set();
+        const table = $("#tech-data-table").DataTable();
+        table.rows().every(function (rowIdx) {
+            const checkbox = $("#" + rowIdx);
+            if (checkbox.prop("checked"))
+                set.add(rowIdx);
+        })
+
+        if (set.size === 0){
+            layer.msg("没有选中任何项目", {icon: 2, time: 1000});
+        }else{
+            layer.confirm("真的要删除所有选中的项目吗？", {
+                btn:["确认", "取消"],
+                btn1: function () {
+                    tech_data = tech_data.filter(function (element, index) {
+                        return !set.has(index);
+                    })
+                    fill_table(tech_data);
+                    layer.msg("成功所选删除项目!", {icon: 1, time: 1000});
+                },
+                btn2: function () {
+                }
+            })
+        }
+    }
+
+    function import_file() {
+        $("#select-file-button").text("点击选择文件");
+        layer.open({
+            type: 6,
+            title: "导入项目",
+            btn: ["确认", "取消"],
+            content: $("#input-file").html(),
+            btn1: function (index, layero) {
+                const row = [
+                    ["","53","210103027","唐氏综合症筛查","单侧","70","125","2","2019/3/1","修改"],
+                    ["","54","210103028","雌三醇测定（化X发光法、荧光免疫法）","次","50","125","2","2019/3/1","修改"],
+                    ["","55","210103029","雌二醇测定（化X发光法、荧光免疫法）","次","50","125","2","2019/3/1","修改"],
+                    ["","56","210103030","孕酮测定（化X发光法、荧光免疫法）","单侧","50","125","2","2019/3/1","修改"]
+                ]
+                for (let line of row)
+                    tech_data.unshift(line);
+                fill_table(tech_data);
+                layer.close(index);
+                layer.msg("批量导入项目成功！", {icon: 1, time: 1500});
+            },
+            btn2: function (index, layero) {
+            }
+        });
+    }
+
+    function export_selected_row() {
+        const set = new Set();
+        const table = $("#tech-data-table").DataTable();
+        table.rows().every(function (rowIdx) {
+            const checkbox = $("#" + rowIdx);
+            if (checkbox.prop("checked"))
+                set.add(rowIdx);
+        });
+        if (set.size === 0){
+            layer.msg("没有选中任何项目!", {icon: 2, time:1000});
+        }else{
+            $("#select-file-button").text("点击选择路径");
+            layer.open({
+                type: 6,
+                title: "批量导出项目",
+                btn: ["确认", "取消"],
+                content: $("#input-file").html(),
+                btn1: function (index, layero) {
+                    layer.close(index);
+                    layer.msg("成功导出所有被选中的项目！", {icon: 1, time: 1500});
+                },
+                btn2: function (index, layero) {
+                }
+            });
+        }
+    }
+
+    function add_item() {
+        layer.open({
+            type: 1,
+            title: "新增数据",
+            btn: ["确认", "取消"],
+            area: ['500px', '500px'],
+            content: $("#row-form").prop("innerHTML"),
+            btn1: function (index, layero) {
+                const date = new Date();
+                const row = [
+                    "",
+                    $(layero).find("#id").val(),
+                    $(layero).find("#code").val(),
+                    $(layero).find("#name").val(),
+                    $(layero).find("#specification").val(),
+                    $(layero).find("#price").val(),
+                    $(layero).find("#dept_id").val(),
+                    $(layero).find("#type").val(),
+                    date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDay(),
+                    "修改"
+                ];
+                tech_data.unshift(row);
+                fill_table(tech_data);
+                layer.msg("添加项目成功",{icon: 1, time: 1000});
+                layer.close(index);
+            },
+            btn2:function () {
+            }
+        })
+    }
+
+    function modify(row_idx) {
+        const table = $("#tech-data-table").DataTable();
+        const row = table.row().data();
+        $("#id").attr("value", row[1]);
+        $("#code").attr("value", row[2]);
+        $("#name").attr("value", row[3]);
+        $("#specification").attr("value", row[4]);
+        $("#price").attr("value", row[5]);
+        $("#dept_id").attr("value", row[6]);
+        $("#type").attr("value", row[7]);
+        layer.open({
+            type: 1,
+            title: "修改数据",
+            btn: ["确认", "取消"],
+            area: ['500px', '500px'],
+            content: $("#row-form").prop("innerHTML"),
+            btn1: function (index, layero) {
+                const date = new Date();
+                table.cell(row_idx, 1).data($(layero).find("#id").val());
+                table.cell(row_idx, 2).data($(layero).find("#code").val());
+                table.cell(row_idx, 3).data($(layero).find("#name").val());
+                table.cell(row_idx, 4).data($(layero).find("#specification").val());
+                table.cell(row_idx, 5).data($(layero).find("#price").val());
+                table.cell(row_idx, 6).data($(layero).find("#dept_id").val());
+                table.cell(row_idx, 7).data($(layero).find("#type").val());
+                table.cell(row_idx, 8).data(date.getFullYear() + "/" + (date.getMonth() + 1) + "/" + date.getDay());
+                layer.msg("修改项目成功",{icon: 1, time: 1000});
+                layer.close(index);
+            },
+            btn2:function () {
+            }
+        })
+    }
+
+    function fill_table(data) {
+        const table = $("#tech-data-table").DataTable();
+        table.clear();
+        for (let r of data){
+            table.row.add(r);
+        }
+        table.draw();
+    }
 </script>
 </html>
