@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="shortcut icon" href="assets/img/logo-fav.png">
+    <title>HIS</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+
+    <link rel="stylesheet" type="text/css" href="assets/css/style_me.css"/>
+    <link rel="stylesheet" type="text/css" href="assets/lib/perfect-scrollbar/css/perfect-scrollbar.min.css"/>
+    <link rel="stylesheet" type="text/css" href="assets/lib/material-design-icons/css/material-design-iconic-font.min.css"/>
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="assets/lib/jquery.vectormap/jquery-jvectormap-1.2.2.css"/>
+    <link rel="stylesheet" type="text/css" href="assets/lib/jqvmap/jqvmap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="assets/lib/datetimepicker/css/bootstrap-datetimepicker.min.css"/>
+    <link rel="stylesheet" href="assets/css/style.css" type="text/css"/>
+    <style type="text/css">
+        .empty{display: none}
+    </style>
+</head>
+<body>
+<div class="be-wrapper be-fixed-sidebar">
+    <!-- 顶部导航栏 -->
+    <nav class="navbar navbar-default navbar-fixed-top be-top-header">
+        <div class="container-fluid">
+            <!-- 左上角log -->
+            <div class="navbar-header">
+                <a href="#" class="navbar-brand"></a>
+            </div>
+
+            <div class="be-right-navbar">
+                <ul class="nav navbar-nav navbar-right be-user-nav">
+                    <li class="dropdown">
+                        <a href="#" data-toggle="dropdown" role="button" aria-expanded="false" class="dropdown-toggle">
+                            <img src="assets/img/avatar.png" alt="Avatar">
+                            <span class="user-name">${sessionScope.userId}</span>
+                        </a>
+                        <ul role="menu" class="dropdown-menu">
+                            <li>
+                                <div class="user-info">
+                                    <div class="user-name">${sessionScope.userId}</div>
+                                </div>
+                            </li>
+                            <li>
+                                <a onclick="$.quit('${pageContext.request.contextPath}');return false;">
+                                    <span class="icon mdi mdi-power"></span>注销
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+                <!--                <div class="page-title">收费员>>收费</div>-->
+            </div>
+        </div>
+    </nav>
+
+    <!-- 左侧边导航栏 -->
+    <div class="be-left-sidebar">
+        <div class="left-sidebar-wrapper"><a href="#" class="left-sidebar-toggle">Dashboard</a>
+            <div class="left-sidebar-spacer">
+                <div class="left-sidebar-scroll">
+                    <div class="left-sidebar-content">
+                        <ul class="sidebar-elements">
+                            <li class="divider">菜单</li>
+                            <li class="parent"><a href="#"><i class="icon mdi mdi-face"></i><span>挂号收费</span></a>
+                                <ul class="sub-menu">
+                                    <li><a href="register.html">挂号</a>
+                                    </li>
+                                    <li><a href="withdrawRegistration.html">退号</a>
+                                    </li>
+                                    <li><a href="abnormalInvoiceProcess.html">异常发票处理</a>
+                                    </li>
+                                    <li><a href="payWithdraw.html">收退费</a>
+                                    </li>
+                                    <li class="active"><a href="dailySettlement.html">日结</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页面主内容 -->
+    <div class="be-content">
+        <div class="main-content container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default panel-border-color panel-border-color-primary">
+                        <div class="panel-heading panel-heading-divider">历史日结记录查询</div>
+                        <div class="panel-body">
+                            <form id = "reg-form" name = "reg-form" action="#" onsubmit="return false"
+                                  class="form-horizontal group-border-dashed">
+
+                                <div class="form-group">
+                                    <label for="odId" class="col-sm-2 control-label " style="font-size: 130%">收费员编号</label>
+                                    <div class="col-sm-3">
+                                        <input name = "odId" id = "odId" readonly="readonly"
+                                               type="text" class="form-control input-sm" value="1123456">
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <button type="button" class="btn btn-space btn-primary btn-lg col-sm-5" onclick="search()">
+                                            历史记录查询
+                                        </button>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" style="font-size: 130%">查询起始时间</label>
+                                    <div class="col-sm-3 col-xs-7">
+                                        <div  data-date-format="yyyy-mm-dd - HH:ii" data-link-field="dtp_input1" class="input-group date datetimepicker">
+                                            <input  id="beginTime" size="16" type="text" value="" readonly="" class="form-control input-sm"><span class="input-group-addon btn btn-primary"><i class="icon-th mdi mdi-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                    <label class="col-sm-2 control-label" style="font-size: 130%">查询截止时间</label>
+                                    <div class="col-sm-3 col-xs-7">
+                                        <div  data-date-format="yyyy-mm-dd - HH:ii" data-link-field="dtp_input1" class="input-group date datetimepicker">
+                                            <input  id="endTime" size="16" type="text" value="" readonly="" class="form-control input-sm"><span class="input-group-addon btn btn-primary"><i class="icon-th mdi mdi-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="panel-heading">
+                                患者项目信息
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <table id="history-table" class="table table-striped table-hover table-fw-widget ">
+                                            <thead>
+                                            <tr>
+                                                <th>日结编号</th>
+                                                <th>起始时间</th>
+                                                <th>截止时间</th>
+                                                <th>日结汇总</th>
+                                                <th>操作</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="showlist" class="row empty">
+                                <div class="col-md-12">
+                                    <div class="panel panel-default panel-border-color panel-border-color-primary">
+                                        <div class="panel-heading panel-heading-divider">历史日结统计单</div>
+                                        <div class="panel-body">
+                                            <div class="col-md-12">
+                                                <img src="assets/img/daily_pay.png" style="width: 100%">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+
+<script src="assets/lib/jquery/jquery.min.js" type="text/javascript"></script>
+<script src="assets/lib/perfect-scrollbar/js/perfect-scrollbar.jquery.min.js" type="text/javascript"></script>
+<script src="assets/js/main.js" type="text/javascript"></script>
+<script src="assets/lib/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="assets/lib/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+<script src="assets/lib/datatables/js/jquery.dataTables.min.js" type="text/javascript"></script>
+<script src="assets/lib/datatables/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+<script src="assets/js/app-tables-datatables.js" type="text/javascript"></script>
+<script src="assets/lib/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+<script src="assets/lib/jquery.nestable/jquery.nestable.js" type="text/javascript"></script>
+<script src="assets/lib/moment.js/min/moment.min.js" type="text/javascript"></script>
+<script src="assets/lib/datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+<script src="assets/lib/daterangepicker/js/daterangepicker.js" type="text/javascript"></script>
+<script src="assets/lib/select2/js/select2.min.js" type="text/javascript"></script>
+<script src="assets/lib/select2/js/select2.full.min.js" type="text/javascript"></script>
+<script src="assets/lib/bootstrap-slider/js/bootstrap-slider.js" type="text/javascript"></script>
+<script src="assets/js/app-form-elements.js" type="text/javascript"></script>
+<script type="text/javascript" src="assets/lib/layui/layui.all.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        //initialize the javascript
+        App.init();
+        App.formElements();
+        init_pay_table();
+    });
+
+    var pay_data = [
+        [ "12", "2020-04-27 08:45", "2020-04-27 23:25", "1234.40"],
+        [ "13", "2020-04-28 08:45", "2020-04-28 22:25", "1233.83"],
+        [ "14", "2020-04-29 08:45", "2020-04-29 21:11", "1534.20"],
+        [ "15", "2020-04-30 08:45", "2020-04-30 23:22", "1234.51"],
+        [ "16", "2020-05-01 08:45", "2020-05-01 22:35", "1286.40"]
+    ];
+
+
+    function search() {
+        const begin = $("#beginTime").val();
+        const end = $("#endTime").val();
+        if (begin === "" || end === ""){
+            layer.msg("请填写查询的起始和截止时间",{icon:2,time:2000});
+            return;
+        }
+
+        const table = $("#history-table").DataTable();
+        table.clear();
+        for (let r of pay_data){
+            table.row.add(r);
+        }
+        table.draw();
+        for (let i = 0; i < 2; ++i){
+            const table2 = $("#history-table")[0];
+            const rows = table2.rows;
+            const $cell = $(rows[i].cells[4].firstChild);
+            $cell.click(function () {
+                show();
+            })
+        }
+    }
+
+
+    function init_pay_table(){
+        $.extend( true, $.fn.dataTable.defaults, {
+
+        } );
+
+        const dataTableConfig = {
+            // "data":pay_data,
+            "dom":
+                "<'row be-datatable-header'<'col-sm-6'l><'col-sm-6'f>>" +
+                "<'row be-datatable-body'<'col-sm-12'tr>>" +
+                "<'row be-datatable-footer'<'col-sm-5'i><'col-sm-7'p>>",
+
+            "bPaginate": true,  //是否分页。
+            "bStateSave": true,
+            "aLengthMenu": [5, 10, 15],
+            "language": {
+                "processing": "数据查询中",
+                "emptyTable": "无付费项目信息",
+                "info": "显示 _START_ 到 _END_ 条数据 共 _TOTAL_ 条数据",
+                "infoEmpty": "无数据",
+                "infoFiltered": "(在 _MAX_ 条数据中查询)",
+                "lengthMenu": "显示 _MENU_ 条数据",
+                "search": "查询:",
+                "zeroRecords": "没有找到对应的数据",
+                "paginate": {
+                    "previous":"上一页",
+                    "next": "下一页",
+                    "last": "末页",
+                    "first": "首页"
+                },
+            },
+            'columnDefs': [{
+                'targets': 4,
+                'searchable': false,
+                'orderable': false,
+                'render': function (data, type, full, meta){
+                    const button = $("<input type='button' class='btn btn-space btn-primary'>");
+                    button.val("查询");
+                    // button.attr('onclick', 'show()');
+                    return button.prop("outerHTML");
+                    // return '<input type="button"" >';
+                    // return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
+                }
+            }]
+        };
+
+        $("#history-table").dataTable(dataTableConfig);
+    }
+
+    function show() {
+        $("#showlist").removeClass("empty");
+    }
+
+</script>
+</html>
