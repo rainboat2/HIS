@@ -81,7 +81,12 @@
                             <table id="patient-table" class="table table-striped table-hover table-fw-widget">
                                 <thead>
                                 <tr>
-                                    <th><input type="checkbox" id="select-all" value="1"></th>
+                                    <th>
+                                        <div class="be-checkbox-sm be-checkbox">
+                                            <input id="select-all" type="checkbox">
+                                            <label for="select-all"></label>
+                                        </div>
+                                    </th>
                                     <th>病例号</th>
                                     <th>医技项目id</th>
                                     <th>医技项目名称</th>
@@ -134,12 +139,16 @@
                     <form action="#" class="form-horizontal group-border-dashed">
                         <div class="form-group">
                             <div class="col-sm-12">
-                                <a href="assets/img/gallery/check.jpg" target="_blank"><img src="assets/img/gallery/check.jpg" width="100" height="160" class="center-block"></a>
+                                <a href="assets/img/gallery/check.jpg" target="_blank">
+                                    <img class="center-block" src="assets/img/gallery/check.jpg" width="100" height="160">
+                                </a>
                             </div>
-                            <hr>
                             <div class="col-sm-12">
-                                <label for="result-area">结果说明</label>
-                                <textarea id="result-area" class="form-control" style="font-size: small">这里是检查单的说明</textarea>
+                                <p></p>
+                            </div>
+                            <div class="col-sm-12">
+                                <label for="show-result-area"><b>结果说明</b></label>
+                                <textarea id="show-result-area" class="form-control" style="font-size: small">这里是检查单的说明</textarea>
                             </div>
                         </div>
                     </form>
@@ -172,7 +181,6 @@
 
 <script type="text/javascript">
 
-
     const data = [
         ["","3242323","120500003","中清创缝合","处置","待执行","确认执行"],
         ["","3242323","210101002","脑室碘水造影","检查","已执行","录入结果"],
@@ -183,7 +191,6 @@
         App.init();
         init_doctor_table();
         init_table_checkbox();
-        search_and_fill_table();
     });
 
     function init_doctor_table(){
@@ -217,7 +224,15 @@
                 'searchable': false,
                 'orderable': false,
                 'render': function (data, type, full, meta){
-                    return '<input type="checkbox" name="id[]" value="' + $('<div/>').text(data).html() + '">';
+                    const div = $('<div class="be-checkbox be-checkbox-sm"></div>');
+                    const input = $("<input type='checkbox' name='id[]'>");
+                    const label = $("<label></label>")
+                    input.attr('id', meta.row);
+                    label.attr('for', meta.row);
+                    div.append(input);
+                    div.append(label);
+                    input.attr('onclick', 'cancel_all_except(' + meta.row + ')');
+                    return div.prop("outerHTML");
                 }
             },{
                 'targets': 6,
@@ -253,7 +268,8 @@
         $("div.toolbar").html("<input type='text' id='custom-search' placeholder='病例号/医技项目id' class='input-sm form-control'>");
         $("#custom-search").autocomplete({
             source: ["3242323", "210103015", "210103009", "210101002", "120500003"],
-            select: function () {
+            select: function (event, ui) {
+                $("#custom-search").val(ui.item.value);
                 search_and_fill_table();
             }
         })
@@ -280,37 +296,52 @@
                 }
             }
         })
-
-        // // Handle form submission event
-        // $('#frm-example').on('submit', function(e){
-        //     var form = this;
-        //
-        //     // Iterate over all checkboxes in the table
-        //     table.$('input[type="checkbox"]').each(function(){
-        //         // If checkbox doesn't exist in DOM
-        //         if(!$.contains(document, this)){
-        //             // If checkbox is checked
-        //             if(this.checked){
-        //                 // Create a hidden element
-        //                 $(form).append(
-        //                     $('<input>')
-        //                         .attr('type', 'hidden')
-        //                         .attr('name', this.name)
-        //                         .val(this.value)
-        //                 );
-        //             }
-        //         }
-        //     });
-        // });
     }
 
     function cancel_item() {
+        const table = $("#patient-table").DataTable();
+        // 找到被选中的项目
+        let row_idx = -1;
+        table.rows().every(function (index) {
+            if ($("#" + index).prop("checked"))
+                row_idx = index;
+        })
 
+        if (row_idx === -1){
+            layer.msg("未选中任何项目", {icon: 2, time: 1000});
+        }else if (table.cell(row_idx, 5).data() !== '待执行'){
+            layer.msg("只有待执行的项目才能被取消", {icon: 2, time: 1500});
+        } else {
+            const name = table.cell(row_idx, 3).data();
+            layer.confirm("真的要将项目'" + name + "'取消吗？该操作将不可逆!",{
+                btn: ['确认', '取消'],
+                btn1: function (index) {
+                    table.cell(row_idx, 5).data("已取消");
+                    table.cell(row_idx, 6).data("查看结果");
+                    layer.close(index);
+                    layer.msg("项目" + name + "已被取消!");
+                },
+                btn2: function () {
+                }
+            })
+        }
+    }
+
+    // 取消所有的单选框，除了指定的那个外
+    function cancel_all_except(row_idx) {
+        const checkbox = $("#" + row_idx);
+        // 一个checkbox被选中时，应该取消其他的选中
+        if (checkbox.prop('checked')){
+            const table = $("#patient-table").DataTable();
+            table.rows().every(function (index) {
+                if (index === row_idx) return;
+                $("#" + index).prop('checked', false);
+            })
+        }
     }
 
     function search_and_fill_table() {
-        // const text = $("#custom-search").val();
-        const text = "3242323";
+        const text = $("#custom-search").val();
         const table = $("#patient-table").DataTable();
         table.clear();
         for (let r of data){
@@ -366,8 +397,9 @@
     function show_result(row_idx) {
         layer.open({
             type: 6,
-            title: "录入结果",
+            title: "查看结果",
             btn: ["确认"],
+            area: "300px",
             content: $("#show-result-form").html(),
             btn1: function (index, layero) {
                 layer.close(index);
