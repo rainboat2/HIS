@@ -101,6 +101,53 @@
     </div>
 </div>
 
+<div id="input-result-form" style="display: none">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <form action="#" class="form-horizontal group-border-dashed">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <input type="file" name="file-1" id="file-1" data-multiple-caption="{count} files selected" multiple class="inputfile">
+                                <label for="file-1" class="btn-default"> <i class="mdi mdi-upload"></i><span>点击选择文件</span></label>
+                                <input type="text" value="  选中文件路径" style="border: 0px" disabled="disabled">
+                            </div>
+
+                            <div class="col-sm-12">
+                                <label for="result-area">结果说明</label>
+                                <textarea id="result-area" class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="show-result-form" style="display: none">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <form action="#" class="form-horizontal group-border-dashed">
+                        <div class="form-group">
+                            <div class="col-sm-12">
+                                <a href="assets/img/gallery/check.jpg" target="_blank"><img src="assets/img/gallery/check.jpg" width="100" height="160" class="center-block"></a>
+                            </div>
+                            <div class="col-sm-12">
+                                <label for="result-area">结果说明</label>
+                                <textarea id="result-area" class="form-control" style="font-size: small">这里是检查单的说明</textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 
 
@@ -123,6 +170,7 @@
 
 
 <script type="text/javascript">
+
 
     const data = [
         ["","3242323","120500003","中清创缝合","处置","待执行","确认执行"],
@@ -174,17 +222,16 @@
                 'targets': 6,
                 'searchable': false,
                 'orderable' : false,
-                'render': function (data, type, full, meta) {
+                'render': function (data, type, row, meta) {
                     const button = $("<input type='button' class='btn btn-space btn-primary'>");
                     button.val(data);
-                    const bt_id = full[1] + full[2];
-                    button.attr("id", full[1] + full[2]);
+
                     if (data === "确认执行"){
-                        button.attr("onclick", "confirm('" + full[2] + "', " + bt_id + ")");
+                        button.attr("onclick", "confirm(" + meta.row + ")");
                     } else if (data === "录入结果")
-                        button.bind('click', input_result(full, this));
+                        button.attr('onclick', "input_result(" + meta.row + ")");
                     else if (data === "查看结果")
-                        button.bind('click', show_result(full, this));
+                        button.attr('onclick', "show_result(" + meta.row + ")");
                     else
                         button.text("不可达的按钮");
                     return button.prop("outerHTML");
@@ -224,7 +271,7 @@
             $('input[type="checkbox"]', rows).prop('checked', this.checked)
         })
 
-        $("#patient-table tbody").on('change', 'input[type="checkbox"', function () {
+        $("#patient-table tbody").on('change', 'input[type="checkbox"]', function () {
             if (!this.checked){
                 const el = $("#select-all").get(0);
                 if (el && el.checked && ('indeterminate' in el)){
@@ -274,35 +321,57 @@
     }
 
     // 确认执行
-    function confirm(tech_id, bt_id) {
+    function confirm(row_idx) {
+        console.log(row_idx);
         layer.confirm("确认该项已经完成了吗？",{
-            btn:["yes", "no"],
+            btn:["确认", "取消"],
             btn1: function(index, layero){
                 // 修改项目状态，修改按钮文字和onclick事件
-                const button = $("#" + bt_id);
                 const table = $("#patient-table").DataTable();
-                table.rows().every(function (rowIdx, tableLoop, rowLoop) {
-                    const data = this.data();
-                    console.log(tech_id + " " + data[2] + " " + (tech_id === data[2]));
-                    if (data[2] === tech_id){
-                        table.cell(rowIdx, 5).data("已执行");
-                    }
-                });
+                table.cell(row_idx, 5).data("已执行");
+                table.cell(row_idx, 6).data("录入结果");
+
                 layer.close(index);
+                layer.msg("成功执行", {icon: 1, time: 1500});
             },
             btn2: function(index, layero){
+                layer.msg("已取消执行", {icon: 2, time: 1500});
                 return true;
             }
         })
-
     }
 
     // 录入结果
-    function input_result(bt_id) {
+    function input_result(row_idx) {
+        layer.open({
+            type: 6,
+            title: "录入结果",
+            btn: ["确认", "取消"],
+            content: $("#input-result-form").html(),
+            btn1: function (index, layero) {
+                const table = $("#patient-table").DataTable();
+                table.cell(row_idx, 5).data("已完成");
+                table.cell(row_idx, 6).data("查看结果");
+
+                layer.close(index);
+                layer.msg("结果已保存", {icon: 1, time: 1500});
+            },
+            btn2: function (index, layero) {
+            }
+        })
     }
 
     // 查看结果
-    function show_result(bt_id) {
+    function show_result(row_idx) {
+        layer.open({
+            type: 6,
+            title: "录入结果",
+            btn: ["确认"],
+            content: $("#show-result-form").html(),
+            btn1: function (index, layero) {
+                layer.close(index);
+            },
+        })
     }
 </script>
 </html>
